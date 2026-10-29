@@ -1,0 +1,276 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} | Ombor Pro{% endblock %}
+
+{% block page_title %}Mahsulot tafsilotlari{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h2>{{ product.name }}</h2>
+        <p>Mahsulot haqida batafsil ma’lumot.</p>
+    </div>
+
+    <div class="d-flex gap-2">
+
+        <a
+            href="{% url 'product_edit' product.pk %}"
+            class="btn btn-warning"
+        >
+            <i class="bi bi-pencil"></i>
+            Tahrirlash
+        </a>
+
+        <a
+            href="{% url 'product_list' %}"
+            class="btn btn-light"
+        >
+            Orqaga
+        </a>
+
+    </div>
+
+</div>
+
+
+<div class="row g-4">
+
+    <div class="col-lg-4">
+
+        <div class="dashboard-card product-detail-card">
+
+            {% if product.image %}
+
+                <img
+                    src="{{ product.image.url }}"
+                    class="detail-image"
+                    alt="{{ product.name }}"
+                >
+
+            {% else %}
+
+                <div class="detail-placeholder">
+
+                    <i class="bi bi-box-seam"></i>
+
+                </div>
+
+            {% endif %}
+
+
+            <div class="detail-body">
+
+                <span class="category-label">
+                    {{ product.category.name }}
+                </span>
+
+                <h3>
+                    {{ product.name }}
+                </h3>
+
+                <div class="detail-price">
+                    {{ product.price|floatformat:0 }} so‘m
+                </div>
+
+                <p class="text-muted">
+                    {{ product.description|default:"Tavsif mavjud emas." }}
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-lg-8">
+
+        <div class="row g-4">
+
+            <div class="col-md-6">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon green">
+                        <i class="bi bi-boxes"></i>
+                    </div>
+
+                    <div>
+
+                        <span>Ombordagi miqdor</span>
+
+                        <h3>
+                            {{ product.quantity }}
+                        </h3>
+
+                        <small>dona</small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon blue">
+                        <i class="bi bi-tag"></i>
+                    </div>
+
+                    <div>
+
+                        <span>Holati</span>
+
+                        <h3>
+
+                            {% if product.quantity == 0 %}
+                                Tugagan
+                            {% elif product.quantity <= 5 %}
+                                Kam
+                            {% else %}
+                                Mavjud
+                            {% endif %}
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-card mt-4">
+
+            <div class="card-header-custom">
+
+                <div>
+
+                    <h5>
+                        Ombor harakatlari
+                    </h5>
+
+                    <p>
+                        Ushbu mahsulot bo‘yicha tarix
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table modern-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Sana</th>
+                            <th>Harakat</th>
+                            <th>Miqdor</th>
+                            <th>Narx</th>
+                            <th>Izoh</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for movement in movements %}
+
+                        <tr>
+
+                            <td>
+                                {{ movement.created_at|date:"d.m.Y H:i" }}
+                            </td>
+
+                            <td>
+
+                                {% if movement.movement_type == 'IN' %}
+
+                                    <span class="movement-badge in">
+                                        Kirim
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="movement-badge out">
+                                        Chiqim
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                {% if movement.movement_type == 'IN' %}
+
+                                    <strong class="text-success">
+                                        +{{ movement.quantity }}
+                                    </strong>
+
+                                {% else %}
+
+                                    <strong class="text-danger">
+                                        -{{ movement.quantity }}
+                                    </strong>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ movement.price|floatformat:0 }}
+                                so‘m
+                            </td>
+
+                            <td>
+                                {{ movement.note|default:"—" }}
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td colspan="5">
+
+                                <div class="empty-state">
+
+                                    <i class="bi bi-clock-history"></i>
+
+                                    <p>
+                                        Hozircha harakatlar mavjud emas.
+                                    </p>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

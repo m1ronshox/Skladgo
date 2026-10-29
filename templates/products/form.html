@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} | Ombor Pro{% endblock %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h2>{{ title }}</h2>
+
+        <p>
+            Mahsulot ma’lumotlarini kiriting.
+        </p>
+
+    </div>
+
+    <a
+        href="{% url 'product_list' %}"
+        class="btn btn-light"
+    >
+        <i class="bi bi-arrow-left"></i>
+        Orqaga
+    </a>
+
+</div>
+
+
+<div class="form-card">
+
+    <form
+        method="post"
+        enctype="multipart/form-data"
+    >
+
+        {% csrf_token %}
+
+
+        {% if form.non_field_errors %}
+
+            <div class="alert alert-danger">
+
+                {{ form.non_field_errors }}
+
+            </div>
+
+        {% endif %}
+
+
+        <div class="row g-4">
+
+
+            <!-- CATEGORY -->
+
+            <div class="col-md-6">
+
+                <label class="form-label">
+                    Kategoriya
+                </label>
+
+                {{ form.category }}
+
+                {% for error in form.category.errors %}
+
+                    <div class="field-error">
+                        {{ error }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- NAME -->
+
+            <div class="col-md-6">
+
+                <label class="form-label">
+                    Mahsulot nomi
+                </label>
+
+                {{ form.name }}
+
+                {% for error in form.name.errors %}
+
+                    <div class="field-error">
+                        {{ error }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- PRICE -->
+
+            <div class="col-md-6">
+
+                <label class="form-label">
+                    Narx
+                </label>
+
+                <div class="input-group">
+
+                    {{ form.price }}
+
+                    <span class="input-group-text">
+                        so‘m
+                    </span>
+
+                </div>
+
+                {% for error in form.price.errors %}
+
+                    <div class="field-error">
+                        {{ error }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- QUANTITY -->
+
+            <div class="col-md-6">
+
+                <label class="form-label">
+                    Boshlang‘ich miqdor
+                </label>
+
+                <div class="input-group">
+
+                    {{ form.quantity }}
+
+                    <span class="input-group-text">
+                        dona
+                    </span>
+
+                </div>
+
+                {% for error in form.quantity.errors %}
+
+                    <div class="field-error">
+                        {{ error }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- DESCRIPTION -->
+
+            <div class="col-12">
+
+                <label class="form-label">
+                    Tavsif
+                </label>
+
+                {{ form.description }}
+
+            </div>
+
+
+            <!-- IMAGE -->
+
+            <div class="col-md-8">
+
+                <label class="form-label">
+                    Mahsulot rasmi
+                </label>
+
+                {{ form.image }}
+
+            </div>
+
+
+            <!-- ACTIVE -->
+
+            <div class="col-md-4">
+
+                <label class="form-label d-block">
+                    Holati
+                </label>
+
+                <div class="form-check form-switch mt-2">
+
+                    {{ form.is_active }}
+
+                    <label class="form-check-label">
+                        Mahsulot faol
+                    </label>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <a
+                href="{% url 'product_list' %}"
+                class="btn btn-light"
+            >
+                Bekor qilish
+            </a>
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+                <i class="bi bi-check-lg"></i>
+                Saqlash
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

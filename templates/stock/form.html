@@ -1,0 +1,87 @@
+
+{% extends "base.html" %}
+
+{% block title %}{{ title }} | Ombor Pro{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h2>{{ title }}</h2>
+        <p>Ombor operatsiyasi ma’lumotlarini kiriting.</p>
+    </div>
+
+    <a href="{% url 'stock_history' %}" class="btn btn-light">
+        <i class="bi bi-arrow-left"></i> Tarixga qaytish
+    </a>
+</div>
+
+<div class="form-card">
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <div class="mb-4">
+            <label class="form-label" for="{{ form.product.id_for_label }}">
+                Mahsulot
+            </label>
+            {{ form.product }}
+            {% for error in form.product.errors %}
+                <div class="field-error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label" for="{{ form.quantity.id_for_label }}">
+                Miqdor
+            </label>
+            {{ form.quantity }}
+            {% for error in form.quantity.errors %}
+                <div class="field-error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label" for="{{ form.price.id_for_label }}">
+                Bir dona uchun narx (so‘m)
+            </label>
+            {{ form.price }}
+            {% for error in form.price.errors %}
+                <div class="field-error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label" for="{{ form.note.id_for_label }}">
+                Izoh
+            </label>
+            {{ form.note }}
+            {% for error in form.note.errors %}
+                <div class="field-error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'stock_history' %}" class="btn btn-light">
+                Bekor qilish
+            </a>
+
+            <button type="submit"
+                    class="btn {% if movement_type == 'IN' %}btn-success{% else %}btn-danger{% endif %}">
+                {% if movement_type == 'IN' %}
+                    <i class="bi bi-box-arrow-in-down"></i> Kirimni saqlash
+                {% else %}
+                    <i class="bi bi-box-arrow-up"></i> Chiqimni saqlash
+                {% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

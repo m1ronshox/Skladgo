@@ -1,0 +1,119 @@
+
+{% extends "base.html" %}
+
+{% block title %}Ombor tarixi | Ombor Pro{% endblock %}
+{% block page_title %}Ombor tarixi{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h2>Ombor harakatlari</h2>
+        <p>Barcha kirim va chiqim amaliyotlari.</p>
+    </div>
+
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'stock_in' %}" class="btn btn-success">
+            <i class="bi bi-plus-lg"></i> Kirim
+        </a>
+        <a href="{% url 'stock_out' %}" class="btn btn-danger">
+            <i class="bi bi-dash-lg"></i> Chiqim
+        </a>
+    </div>
+</div>
+
+<div class="dashboard-card">
+
+    <div class="filter-section">
+        <form method="get" class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Mahsulot qidirish</label>
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ search }}"
+                    class="form-control"
+                    placeholder="Mahsulot nomi..."
+                >
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Harakat turi</label>
+                <select name="type" class="form-select">
+                    <option value="">Barchasi</option>
+                    <option value="IN" {% if selected_type == "IN" %}selected{% endif %}>
+                        Kirim
+                    </option>
+                    <option value="OUT" {% if selected_type == "OUT" %}selected{% endif %}>
+                        Chiqim
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-search"></i> Qidirish
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table modern-table">
+            <thead>
+                <tr>
+                    <th>Sana</th>
+                    <th>Mahsulot</th>
+                    <th>Harakat</th>
+                    <th>Miqdor</th>
+                    <th>Bir dona narxi</th>
+                    <th>Izoh</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for movement in movements %}
+                <tr>
+                    <td>{{ movement.created_at|date:"d.m.Y H:i" }}</td>
+
+                    <td>
+                        <strong>{{ movement.product.name }}</strong>
+                    </td>
+
+                    <td>
+                        {% if movement.movement_type == "IN" %}
+                            <span class="movement-badge in">Kirim</span>
+                        {% else %}
+                            <span class="movement-badge out">Chiqim</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if movement.movement_type == "IN" %}
+                            <strong class="text-success">+{{ movement.quantity }}</strong>
+                        {% else %}
+                            <strong class="text-danger">-{{ movement.quantity }}</strong>
+                        {% endif %}
+                    </td>
+
+                    <td>{{ movement.price|floatformat:0 }} so‘m</td>
+                    <td>{{ movement.note|default:"—" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <i class="bi bi-clock-history"></i>
+                            <h5>Harakatlar topilmadi</h5>
+                            <p>Kirim yoki chiqim amaliyotlari bu yerda ko‘rinadi.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}

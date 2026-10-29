@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Mahsulotni o‘chirish{% endblock %}
+
+{% block page_title %}Mahsulotni o‘chirish{% endblock %}
+
+{% block content %}
+
+<div class="form-card delete-card">
+
+    <div class="delete-icon">
+        <i class="bi bi-trash"></i>
+    </div>
+
+    <h3>Mahsulotni o‘chirish?</h3>
+
+    <p>
+        <strong>{{ product.name }}</strong>
+        mahsulotini o‘chirishni xohlaysizmi?
+    </p>
+
+    <p class="text-muted">
+        Bu amalni qaytarib bo‘lmaydi.
+    </p>
+
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <div class="form-actions">
+
+            <a
+                href="{% url 'product_list' %}"
+                class="btn btn-light"
+            >
+                Bekor qilish
+            </a>
+
+            <button
+                type="submit"
+                class="btn btn-danger"
+            >
+                <i class="bi bi-trash"></i>
+                O‘chirish
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

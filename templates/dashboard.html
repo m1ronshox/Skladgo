@@ -1,0 +1,381 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | Ombor Pro{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-header">
+    <div>
+        <h2>Assalomu alaykum, {{ request.user.username }} 👋</h2>
+        <p>Omboringizning bugungi holati.</p>
+    </div>
+
+    <a href="{% url 'product_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i>
+        Mahsulot qo‘shish
+    </a>
+</div>
+
+
+<!-- STATISTICS -->
+
+<div class="row g-4 mb-4">
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="stat-card">
+
+            <div class="stat-icon blue">
+                <i class="bi bi-box-seam"></i>
+            </div>
+
+            <div>
+                <span>Jami mahsulotlar</span>
+                <h3>{{ products_count }}</h3>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="stat-card">
+
+            <div class="stat-icon purple">
+                <i class="bi bi-grid"></i>
+            </div>
+
+            <div>
+                <span>Kategoriyalar</span>
+                <h3>{{ categories_count }}</h3>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="stat-card">
+
+            <div class="stat-icon green">
+                <i class="bi bi-boxes"></i>
+            </div>
+
+            <div>
+                <span>Ombordagi jami</span>
+                <h3>{{ total_quantity }}</h3>
+                <small>dona</small>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="stat-card">
+
+            <div class="stat-icon orange">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+
+            <div>
+                <span>Kam qolgan</span>
+                <h3>{{ low_stock_products|length }}</h3>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="row g-4">
+
+
+    <!-- LOW STOCK -->
+
+    <div class="col-lg-7">
+
+        <div class="dashboard-card">
+
+            <div class="card-header-custom">
+
+                <div>
+                    <h5>Kam qolgan mahsulotlar</h5>
+                    <p>5 yoki undan kam qolgan mahsulotlar</p>
+                </div>
+
+                <a href="{% url 'product_list' %}">
+                    Barchasi
+                </a>
+
+            </div>
+
+
+            {% if low_stock_products %}
+
+            <div class="table-responsive">
+
+                <table class="table modern-table">
+
+                    <thead>
+                        <tr>
+                            <th>Mahsulot</th>
+                            <th>Kategoriya</th>
+                            <th>Narx</th>
+                            <th>Qoldiq</th>
+                            <th>Holat</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for product in low_stock_products %}
+
+                        <tr>
+
+                            <td>
+                                <div class="product-name">
+                                    {% if product.image %}
+                                        <img src="{{ product.image.url }}">
+                                    {% else %}
+                                        <div class="product-placeholder">
+                                            <i class="bi bi-box"></i>
+                                        </div>
+                                    {% endif %}
+
+                                    <strong>{{ product.name }}</strong>
+                                </div>
+                            </td>
+
+                            <td>
+                                {{ product.category.name }}
+                            </td>
+
+                            <td>
+                                {{ product.price|floatformat:0 }} so‘m
+                            </td>
+
+                            <td>
+                                <strong>{{ product.quantity }}</strong>
+                            </td>
+
+                            <td>
+                                <span class="status-badge warning">
+                                    Kam qolgan
+                                </span>
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+                <div class="empty-state">
+                    <i class="bi bi-check-circle"></i>
+                    <h5>Hammasi joyida</h5>
+                    <p>Kam qolgan mahsulot mavjud emas.</p>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- OUT OF STOCK -->
+
+    <div class="col-lg-5">
+
+        <div class="dashboard-card">
+
+            <div class="card-header-custom">
+
+                <div>
+                    <h5>Tugagan mahsulotlar</h5>
+                    <p>Omborda mavjud emas</p>
+                </div>
+
+            </div>
+
+
+            {% if out_of_stock_products %}
+
+                {% for product in out_of_stock_products %}
+
+                    <div class="stock-item">
+
+                        <div class="product-placeholder">
+                            <i class="bi bi-box"></i>
+                        </div>
+
+                        <div class="stock-info">
+
+                            <strong>
+                                {{ product.name }}
+                            </strong>
+
+                            <small>
+                                {{ product.category.name }}
+                            </small>
+
+                        </div>
+
+                        <span class="status-badge danger">
+                            Tugagan
+                        </span>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="empty-state small">
+
+                    <i class="bi bi-check-circle"></i>
+
+                    <p>
+                        Tugagan mahsulot yo‘q.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- RECENT MOVEMENTS -->
+
+<div class="dashboard-card mt-4">
+
+    <div class="card-header-custom">
+
+        <div>
+            <h5>Oxirgi ombor harakatlari</h5>
+            <p>So‘nggi kirim va chiqimlar</p>
+        </div>
+
+    </div>
+
+
+    <div class="table-responsive">
+
+        <table class="table modern-table">
+
+            <thead>
+
+                <tr>
+                    <th>Mahsulot</th>
+                    <th>Harakat</th>
+                    <th>Miqdor</th>
+                    <th>Narx</th>
+                    <th>Sana</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for movement in recent_movements %}
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            {{ movement.product.name }}
+                        </strong>
+                    </td>
+
+                    <td>
+
+                        {% if movement.movement_type == 'IN' %}
+
+                            <span class="movement-badge in">
+                                <i class="bi bi-arrow-down"></i>
+                                Kirim
+                            </span>
+
+                        {% else %}
+
+                            <span class="movement-badge out">
+                                <i class="bi bi-arrow-up"></i>
+                                Chiqim
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {% if movement.movement_type == 'IN' %}
+                            <strong class="text-success">
+                                +{{ movement.quantity }}
+                            </strong>
+                        {% else %}
+                            <strong class="text-danger">
+                                -{{ movement.quantity }}
+                            </strong>
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+                        {{ movement.price|floatformat:0 }} so‘m
+                    </td>
+
+                    <td>
+                        {{ movement.created_at|date:"d.m.Y H:i" }}
+                    </td>
+
+                </tr>
+
+            {% empty %}
+
+                <tr>
+
+                    <td colspan="5">
+
+                        <div class="empty-state">
+                            <i class="bi bi-clock-history"></i>
+                            <p>Hozircha harakatlar mavjud emas.</p>
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}
